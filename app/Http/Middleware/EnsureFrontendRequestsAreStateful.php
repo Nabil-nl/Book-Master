@@ -9,7 +9,7 @@ class EnsureFrontendRequestsAreStateful
 {
     public function handle(Request $request, Closure $next)
     {
-        // Logic for ensuring frontend requests are stateful
+        
         return $next($request);
     }
 }
