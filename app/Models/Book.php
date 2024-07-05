@@ -2,19 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'title',
-        'author',
-        'genre',
-        'publication_year',
-        'isbn',
-        'copies_available',
+        'title', 'author', 'genre_id', 'publication_year', 'isbn', 'copies_available'
     ];
+
+    public function genre()
+    {
+        return $this->belongsTo(Genre::class);
+    }
 }
+

@@ -16,9 +16,9 @@ class BookController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'genre' => 'required|string|max:255',
+            'genre_id' => 'required|exists:genres,id',
             'publication_year' => 'required|integer',
-            'isbn' => 'required|string|max:13',
+            'isbn' => 'required|string|max:13|unique:books,isbn',
             'copies_available' => 'required|integer',
         ]);
 
@@ -29,7 +29,7 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return $book;
+        return $book->load('genre');
     }
 
     public function update(Request $request, Book $book)
@@ -37,9 +37,9 @@ class BookController extends Controller
         $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'author' => 'sometimes|required|string|max:255',
-            'genre' => 'sometimes|required|string|max:255',
+            'genre_id' => 'sometimes|required|exists:genres,id',
             'publication_year' => 'sometimes|required|integer',
-            'isbn' => 'sometimes|required|string|max:13',
+            'isbn' => 'sometimes|required|string|max:13|unique:books,isbn,' . $book->id,
             'copies_available' => 'sometimes|required|integer',
         ]);
 
@@ -52,6 +52,6 @@ class BookController extends Controller
     {
         $book->delete();
 
-        return response()->json(['message' => 'Delete  successfully !!.'], 204);
+        return response()->json(['message' => 'Delete successfully !!.'], 204);
     }
 }

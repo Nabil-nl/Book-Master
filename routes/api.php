@@ -2,6 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\MemberController;
 
@@ -12,6 +13,8 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+//genres
+Route::apiResource('genres', GenreController::class);
 //  books 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/books', [BookController::class, 'index']);
