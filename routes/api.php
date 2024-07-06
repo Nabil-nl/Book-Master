@@ -27,7 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/books/search', [BookController::class, 'search']);
 });
 //member
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('members', MemberController::class);
 });
