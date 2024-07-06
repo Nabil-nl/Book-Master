@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Book;
@@ -46,6 +47,29 @@ class BookController extends Controller
         $book->update($request->all());
 
         return response()->json($book, 200);
+    }
+
+    public function search(Request $request)
+    {
+        $query = Book::query();
+
+        // Apply search filters based on title, author, or genre
+        if ($request->has('title')) {
+            $query->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+
+        if ($request->has('author')) {
+            $query->where('author', 'like', '%' . $request->input('author') . '%');
+        }
+
+        if ($request->has('genre_id')) {
+            $query->where('genre_id', $request->input('genre_id'));
+        }
+
+        // Paginate the results
+        $books = $query->paginate(10);
+
+        return $books;
     }
 
     public function destroy(Book $book)

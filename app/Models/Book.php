@@ -14,5 +14,8 @@ class Book extends Model
     {
         return $this->belongsTo(Genre::class);
     }
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
 }
-
