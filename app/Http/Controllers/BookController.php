@@ -29,9 +29,58 @@ class BookController extends Controller
         return response()->json($book, 201);
     }
 
-    public function show(Book $book)
+    public function show(Request $request, $id = null)
     {
-        return $book->load('genre');
+        if ($id) {
+            // Find the book by ID
+            $book = Book::find($id);
+
+            // Check if $book is null (model not found)
+            if (!$book) {
+                return response()->json(['message' => 'Book not found'], 404);
+            }
+
+            // Load relationships if needed
+            $book->load('genre');
+
+            return response()->json($book, 200);
+        } else {
+            // Handle search based on query parameters
+            Log::info('Search request received', $request->all());
+
+            $query = Book::query();
+
+            // Apply search filters based on title, author, or genre_id
+            if ($request->has('title')) {
+                $query->where('title', 'like', '%' . $request->input('title') . '%');
+                Log::info('Searching by title: ' . $request->input('title'));
+            }
+
+            if ($request->has('author')) {
+                $query->where('author', 'like', '%' . $request->input('author') . '%');
+                Log::info('Searching by author: ' . $request->input('author'));
+            }
+
+            if ($request->has('genre_id')) {
+                $query->where('genre_id', $request->input('genre_id'));
+                Log::info('Searching by genre_id: ' . $request->input('genre_id'));
+            }
+
+            // Log the final query
+            Log::info('Final query: ' . $query->toSql(), $query->getBindings());
+
+            // Paginate the results
+            $books = $query->paginate(10);
+
+            // Check if any books were found
+            if ($books->isEmpty()) {
+                Log::info('No books found for query: ' . $query->toSql(), $query->getBindings());
+                return response()->json(['message' => 'No books found'], 404);
+            }
+
+            Log::info('Books found: ' . $books->total());
+            return response()->json($books, 200);
+        }
     }
 
     public function update(Request $request, Book $book)
@@ -50,43 +99,10 @@ class BookController extends Controller
         return response()->json($book, 200);
     }
 
-    public function search(Request $request)
-    {
-        $query = Book::query();
-
-        // Appliquer les filtres de recherche en fonction du titre, de l'auteur ou du genre
-        if ($request->has('title')) {
-            $query->where('title', 'like', '%' . $request->input('title') . '%');
-            Log::info('Searching by title: ' . $request->input('title'));
-        }
-
-        if ($request->has('author')) {
-            $query->where('author', 'like', '%' . $request->input('author') . '%');
-            Log::info('Searching by author: ' . $request->input('author'));
-        }
-
-        if ($request->has('genre_id')) {
-            $query->where('genre_id', $request->input('genre_id'));
-            Log::info('Searching by genre_id: ' . $request->input('genre_id'));
-        }
-
-        // Paginer les résultats
-        $books = $query->paginate(10);
-
-        // Vérifier si des livres ont été trouvés
-        if ($books->isEmpty()) {
-            Log::info('No books found');
-            return response()->json(['message' => 'No books found'], 404);
-        }
-
-        Log::info('Books found: ' . $books->total()); // Utilisez la méthode total() pour obtenir le nombre total d'éléments paginés
-        return response()->json($books, 200);
-    }
-
     public function destroy(Book $book)
     {
         $book->delete();
 
-        return response()->json(['message' => 'Delete successfully !!.'], 204);
+        return response()->json(['message' => 'Book deleted successfully.'], 204);
     }
 }
