@@ -39,6 +39,4 @@ class LoanController extends Controller
 
         return response()->json($loan, 200);
     }
-
 }
-

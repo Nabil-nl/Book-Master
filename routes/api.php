@@ -33,5 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/members/{member}', [MemberController::class, 'destroy']);
 });
 //loans
-Route::post('/loans/issue', [LoanController::class, 'issue']);
-Route::patch('/loans/{loan}', [LoanController::class, 'return'])->name('loans.return');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/loans/issue', [LoanController::class, 'issue']);
+    Route::put('/loans/return/{loan}', [LoanController::class, 'return']);
+});
+
