@@ -32,23 +32,24 @@ class MemberController extends Controller
     }
 
     public function update(Request $request, Member $member)
-    {
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:members,email,' . $member->id,
-            'membership_date' => 'sometimes|required|date',
-            'status' => 'sometimes|required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'email' => 'sometimes|required|string|email|max:255|unique:members,email,' . $member->id,
+        'membership_date' => 'sometimes|required|date',
+        'status' => 'sometimes|required|string|max:255',
+    ]);
 
-        $member->update($request->all());
+    $member->update($request->all());
 
-        return response()->json($member, 200);
-    }
+    return response()->json($member, 200);
+}
+
 
     public function destroy(Member $member)
     {
         $member->delete();
 
-        return response()->json(['message' => 'Delete  successfully !!.'], 204);
+        return response()->json(['message' => 'Delete  successfully !!'], 204);
     }
 }

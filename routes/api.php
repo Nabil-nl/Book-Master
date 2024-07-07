@@ -24,10 +24,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/books/{book}', [BookController::class, 'update']);
     Route::delete('/books/{book}', [BookController::class, 'destroy']);
 });
-
 //member
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('members', MemberController::class);
+    Route::get('/members', [MemberController::class, 'index']);
+    Route::post('/members', [MemberController::class, 'store']);
+    Route::get('/members/{member}', [MemberController::class, 'show']);
+    Route::put('/members/{member}', [MemberController::class, 'update']);
+    Route::delete('/members/{member}', [MemberController::class, 'destroy']);
 });
 //loans
 Route::post('/loans/issue', [LoanController::class, 'issue']);
