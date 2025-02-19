@@ -1,4 +1,3 @@
-## API LARAVEL 
 ## Auth sanctum 
 
 ```bash
